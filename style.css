@@ -559,21 +559,21 @@ main {
   50% { transform: translateY(-12%); }
 }
 
-/* Whale container: rises from the horizon and scales up straight toward us
-   (left/top/scale set inline from JS). Inner image just bobs. */
-.whale {
+/* Flock container: flies in from the far top-right toward the pirate and
+   scales up (left/top/scale set inline from JS). Inner image just flaps. */
+.flock {
   position: absolute;
-  top: 40%;
-  left: 60%;
-  width: clamp(80px, 24%, 150px);
-  z-index: 2;
+  top: 8%;
+  left: 95%;
+  width: clamp(70px, 22%, 140px);
+  z-index: 4;
   transform-origin: center bottom;
   transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1),
               top 0.6s cubic-bezier(0.4, 0, 0.2, 1),
               transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.whale img { width: 100%; display: block; animation: bob 1.6s ease-in-out infinite; }
+.flock img { width: 100%; display: block; animation: bob 0.9s ease-in-out infinite; }
 
 .splash {
   position: absolute;

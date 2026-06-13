@@ -1,33 +1,31 @@
 // Walk the Plank: hear a word, pick its picture from 3 options.
-// Wrong = the kid steps further out the plank. Right = the whale swims
-// closer to the rescue. Whale arrives first -> saved. Kid falls off -> splash.
+// A flock of seagulls flies in a little closer EVERY turn (10 turns to reach
+// you -> you escape). Each WRONG answer steps the pirate further out the plank;
+// 5 wrong and he falls off the end. It's a race: survive to the flock or fall.
 import { CARDS } from "./cards.js";
 import { speak, highlight, shuffle, randomItem, imagePath, replay, confetti } from "./utils.js";
 
-const STEPS = 6; // 6 correct rescues you; 6 wrong walks you off the end
+const TURNS_TO_RESCUE = 10; // flock advances once per turn and arrives at 10
+const MAX_WRONG = 5;        // 5 wrong answers and the pirate falls off
 
 // Scene positions (percent), tuned to the perspective plank in
-// images/plank_scene.png. The plank runs from the ship (upper, far, small)
-// down toward the viewer (lower-right, near, big), so as the pirate walks out
-// he moves right + down and scales UP.
+// images/plank_scene.png. The plank runs from the ship's centre rail (far,
+// small) down toward the viewer (near, big); each wrong answer walks the
+// pirate further out and scales him UP.
 const KID = {
-  startL: 45, endL: 76,   // left %: center side-rail -> near tip (nudged left)
+  startL: 42, endL: 73,   // left %: centre rail -> near tip
   startT: 50, endT: 64,   // top %:  higher (far) -> lower (near)
   startS: 0.5, endS: 1.15, // scale:  small (far) -> big (near)
 };
-// The whale enters from the far right, about 2/3 of the way down, and swims
-// diagonally down toward the bottom of the picture (growing as it nears us).
-const WHALE = {
-  startL: 90, endL: 70,
-  startT: 66, endT: 86,
-  startS: 0.5, endS: 1.1,
-};
+// The flock starts far away in the top-right corner (tiny) and homes in on the
+// pirate's current spot, growing as it nears.
+const FLOCK_START = { L: 95, T: 8, S: 0.22 };
 const PIRATE_FRAMES = ["images/pirate_1.png", "images/pirate_2.png", "images/pirate_3.png"];
 
 const scene = document.getElementById("plankScene");
 const walker = document.getElementById("walker");
 const walkerImg = document.getElementById("walkerImg");
-const whaleEl = document.getElementById("whale");
+const flockEl = document.getElementById("flock");
 const splash = document.getElementById("splash");
 const optionsEl = document.getElementById("plankOptions");
 const progressEl = document.getElementById("plankProgress");
@@ -37,8 +35,8 @@ const doneTitle = document.getElementById("plankDoneTitle");
 const doneScore = document.getElementById("plankDoneScore");
 
 let current = null;   // current question
-let correct = 0;      // whale's progress
-let wrong = 0;        // kid's progress along the plank
+let turn = 0;         // total answers given -> drives the flock
+let wrong = 0;        // wrong answers -> walks the pirate out
 let answered = false; // question resolved, waiting for next
 let over = false;
 
@@ -73,18 +71,21 @@ function buildQuestion() {
 function lerp(a, b, p) { return a + (b - a) * p; }
 
 function positions() {
-  const t = wrong / STEPS;
-  walker.style.left = `${lerp(KID.startL, KID.endL, t)}%`;
-  walker.style.top = `${lerp(KID.startT, KID.endT, t)}%`;
+  const t = wrong / MAX_WRONG;
+  const kidL = lerp(KID.startL, KID.endL, t);
+  const kidT = lerp(KID.startT, KID.endT, t);
+  walker.style.left = `${kidL}%`;
+  walker.style.top = `${kidT}%`;
   walker.style.transform = `scale(${lerp(KID.startS, KID.endS, t)})`;
-  const c = correct / STEPS;
-  whaleEl.style.left = `${lerp(WHALE.startL, WHALE.endL, c)}%`;
-  whaleEl.style.top = `${lerp(WHALE.startT, WHALE.endT, c)}%`;
-  whaleEl.style.transform = `translateX(-50%) scale(${lerp(WHALE.startS, WHALE.endS, c)})`;
+  // Flock homes in on the pirate's current position as the turns tick down.
+  const p = turn / TURNS_TO_RESCUE;
+  flockEl.style.left = `${lerp(FLOCK_START.L, kidL, p)}%`;
+  flockEl.style.top = `${lerp(FLOCK_START.T, kidT, p)}%`;
+  flockEl.style.transform = `translateX(-50%) scale(${lerp(FLOCK_START.S, 1, p)})`;
 }
 
 function updateProgress() {
-  progressEl.textContent = `🐳 ${correct}/${STEPS}  •  🚶 ${wrong}/${STEPS}`;
+  progressEl.textContent = `🐦 ${turn}/${TURNS_TO_RESCUE}  •  🚶 ${wrong}/${MAX_WRONG}`;
 }
 
 // Cycle the pirate's stride and play a little walk bounce.
@@ -124,15 +125,13 @@ function answer(btn, item) {
   buttons[correctIdx].classList.add("correct");
   speak(current.target.word); // say the answer aloud
 
+  // The flock advances every turn, no matter the answer.
+  turn++;
   const labelled = highlight(current.target.word, current.target.card.grapheme);
   if (item.correct) {
-    correct++;
     positions();
     revealEl.className = "plank-reveal right show";
     revealEl.innerHTML = `✅ Yes! It was <b>${labelled}</b>`;
-    updateProgress();
-    if (correct >= STEPS) return win();
-    setTimeout(renderQuestion, 1500);
   } else {
     btn.classList.add("wrong");
     wrong++;
@@ -142,23 +141,23 @@ function answer(btn, item) {
     setTimeout(() => walkerImg.classList.remove("wobble"), 500);
     revealEl.className = "plank-reveal wrong show";
     revealEl.innerHTML = `❌ It was <b>${labelled}</b>`;
-    updateProgress();
-    if (wrong >= STEPS) return lose();
-    setTimeout(renderQuestion, 1900);
   }
+  updateProgress();
+
+  // Falling off takes priority; otherwise the flock arriving means escape.
+  if (wrong >= MAX_WRONG) return lose();
+  if (turn >= TURNS_TO_RESCUE) return win();
+  setTimeout(renderQuestion, item.correct ? 1500 : 1900);
 }
 
 function win() {
   over = true;
-  speak("You are rescued!");
-  // hop the pirate onto the whale where it surfaces near the bottom
-  walker.style.left = `${WHALE.endL}%`;
-  walker.style.top = "74%";
-  walker.style.transform = "scale(1.05)";
+  speak("You escaped!");
   walker.classList.add("rescued");
   setTimeout(() => {
-    doneTitle.textContent = "🐳 Rescued! 🎉";
-    doneScore.textContent = `The whale reached you with ${wrong} slip${wrong === 1 ? "" : "s"} to spare!`;
+    doneTitle.textContent = "🐦 You escaped! 🎉";
+    const slips = MAX_WRONG - wrong;
+    doneScore.textContent = `The seagulls reached you with ${slips} slip${slips === 1 ? "" : "s"} to spare!`;
     doneEl.classList.remove("hidden");
     confetti(doneEl);
   }, 900);
@@ -173,13 +172,13 @@ function lose() {
   replay(splash, "splashing");
   setTimeout(() => {
     doneTitle.textContent = "💦 Splash!";
-    doneScore.textContent = `You walked the plank! The whale got ${correct}/${STEPS} of the way. Try again!`;
+    doneScore.textContent = `You fell off! The flock was ${TURNS_TO_RESCUE - turn} turn${TURNS_TO_RESCUE - turn === 1 ? "" : "s"} away. Try again!`;
     doneEl.classList.remove("hidden");
   }, 1100);
 }
 
 export function newPlankGame() {
-  correct = 0;
+  turn = 0;
   wrong = 0;
   over = false;
   frame = 0;

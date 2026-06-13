@@ -345,6 +345,15 @@ main {
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.15);
 }
 
+.match-word {
+  font-size: clamp(1.8rem, 7vw, 2.6rem);
+  font-weight: bold;
+  color: #1565c0;
+}
+
+.match-word.revealed { transform: scale(1.06); transition: transform 0.2s; }
+.match-word .hl { color: #d81b60; text-decoration: underline; }
+
 .match-options {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -484,14 +493,11 @@ main {
   font-size: clamp(1.1rem, 3.4vw, 1.6rem);
   font-weight: bold;
   color: #1565c0;
-  opacity: 0;
-  transform: translateY(8px);
-  transition: opacity 0.4s, transform 0.4s;
+  transition: transform 0.2s;
 }
 
+.odd-images.revealed .odd-caption { transform: scale(1.08); }
 .odd-caption .hl { color: #d81b60; text-decoration: underline; }
-
-.odd-images.revealed .odd-caption { opacity: 1; transform: translateY(0); }
 
 /* ================= Walk the Plank ================= */
 .plank-instruct {
@@ -647,6 +653,14 @@ main {
 }
 
 .plank-option img { width: 100%; aspect-ratio: 1; object-fit: contain; display: block; }
+
+.plank-word {
+  display: block;
+  padding: 0.1rem 0 0.35rem;
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  font-weight: bold;
+  color: #1565c0;
+}
 
 .plank-option:hover:not(:disabled) { transform: translateY(-5px) scale(1.04); }
 

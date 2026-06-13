@@ -104,7 +104,8 @@ function renderQuestion() {
   current.items.forEach(item => {
     const btn = document.createElement("button");
     btn.className = "plank-option";
-    btn.innerHTML = `<img src="${imagePath(item.card.id, item.word)}" alt="option">`;
+    btn.innerHTML = `<img src="${imagePath(item.card.id, item.word)}" alt="${item.word}">` +
+                    `<span class="plank-word">${item.word}</span>`;
     btn.addEventListener("click", () => answer(btn, item));
     optionsEl.appendChild(btn);
   });

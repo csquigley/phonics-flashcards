@@ -71,8 +71,8 @@ function renderQuestion() {
     const fig = document.createElement("figure");
     fig.className = "odd-item";
     fig.innerHTML = `
-      <img src="${imagePath(item.card.id, item.word)}" alt="mystery picture">
-      <figcaption class="odd-caption">${highlight(item.word, item.card.grapheme)}</figcaption>`;
+      <img src="${imagePath(item.card.id, item.word)}" alt="${item.word}">
+      <figcaption class="odd-caption">${item.word}</figcaption>`;
     fig.addEventListener("click", () => answer(fig, item));
     imagesEl.appendChild(fig);
   });
@@ -89,7 +89,11 @@ function answer(fig, item) {
     if (firstTry) score++;
     renderStars();
     speak(item.word);
-    // reveal all the words so the sounds can be compared
+    // highlight the grapheme in every word so the sounds can be compared
+    const figs = imagesEl.querySelectorAll(".odd-item .odd-caption");
+    q.items.forEach((it, i) => {
+      figs[i].innerHTML = highlight(it.word, it.card.grapheme);
+    });
     imagesEl.classList.add("revealed");
     setTimeout(() => {
       qIndex++;

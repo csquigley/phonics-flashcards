@@ -1,12 +1,13 @@
 // Match game: see a picture, choose the sound you hear from 4 large options.
 import { CARDS } from "./cards.js";
-import { wordMatches, speak, shuffle, randomItem, imagePath, replay, confetti } from "./utils.js";
+import { wordMatches, highlight, speak, shuffle, randomItem, imagePath, replay, confetti } from "./utils.js";
 
 const ROUND_SIZE = 8;
 const OPTION_COUNT = 4;
 
 const stage = document.getElementById("matchStage");
 const imageEl = document.getElementById("matchImage");
+const wordEl = document.getElementById("matchWord");
 const optionsEl = document.getElementById("matchOptions");
 const progressEl = document.getElementById("matchProgress");
 const starsEl = document.getElementById("matchStars");
@@ -42,7 +43,9 @@ function renderQuestion() {
   firstTry = true;
   locked = false;
   imageEl.src = imagePath(q.card.id, q.word);
-  imageEl.alt = "mystery picture";
+  imageEl.alt = q.word;
+  wordEl.textContent = q.word; // show the word (plain — sound not given away yet)
+  wordEl.classList.remove("revealed");
   optionsEl.innerHTML = "";
   q.options.forEach(opt => {
     const btn = document.createElement("button");
@@ -63,6 +66,8 @@ function answer(btn, opt, q) {
     btn.classList.add("correct");
     if (firstTry) score++;
     renderStars();
+    wordEl.innerHTML = highlight(q.word, q.card.grapheme); // now reveal the sound
+    wordEl.classList.add("revealed");
     speak(q.word);
     optionsEl.querySelectorAll("button").forEach(b => (b.disabled = true));
     setTimeout(() => {

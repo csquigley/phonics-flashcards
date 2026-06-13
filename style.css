@@ -575,6 +575,26 @@ main {
 
 .flock img { width: 100%; display: block; animation: bob 0.9s ease-in-out infinite; }
 
+/* Seagulls carrying the pirate off on a win. Positioned at the pirate's spot
+   (left/top set inline), then it flaps then soars up and away off the top. */
+.carried {
+  position: absolute;
+  width: clamp(110px, 30%, 190px);
+  z-index: 6;
+  transform: translateX(-50%);
+  transform-origin: center bottom;
+}
+
+.carried.flyaway { animation: liftOff 2.1s ease-in forwards; }
+
+@keyframes liftOff {
+  0%   { transform: translateX(-50%) translateY(0) scale(1) rotate(0); opacity: 1; }
+  12%  { transform: translateX(-50%) translateY(6%) scale(1.04) rotate(0); }
+  30%  { transform: translateX(-50%) translateY(-12%) scale(1) rotate(-3deg); }
+  55%  { transform: translateX(-46%) translateY(-90%) scale(0.8) rotate(3deg); opacity: 1; }
+  100% { transform: translateX(-38%) translateY(-360%) scale(0.32) rotate(-2deg); opacity: 0; }
+}
+
 .splash {
   position: absolute;
   top: 64%;

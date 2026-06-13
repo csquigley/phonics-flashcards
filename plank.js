@@ -26,6 +26,7 @@ const scene = document.getElementById("plankScene");
 const walker = document.getElementById("walker");
 const walkerImg = document.getElementById("walkerImg");
 const flockEl = document.getElementById("flock");
+const carriedEl = document.getElementById("carried");
 const splash = document.getElementById("splash");
 const optionsEl = document.getElementById("plankOptions");
 const progressEl = document.getElementById("plankProgress");
@@ -153,14 +154,22 @@ function answer(btn, item) {
 function win() {
   over = true;
   speak("You escaped!");
-  walker.classList.add("rescued");
+  // Swap the pirate + flock for the combined "carried away" sprite at the
+  // pirate's current spot, then let it soar up and off the top of the scene.
+  const t = wrong / MAX_WRONG;
+  carriedEl.style.left = `${lerp(KID.startL, KID.endL, t)}%`;
+  carriedEl.style.top = `${lerp(KID.startT, KID.endT, t) - 26}%`;
+  walker.classList.add("hidden");
+  flockEl.classList.add("hidden");
+  carriedEl.classList.remove("hidden");
+  replay(carriedEl, "flyaway");
   setTimeout(() => {
     doneTitle.textContent = "🐦 You escaped! 🎉";
     const slips = MAX_WRONG - wrong;
-    doneScore.textContent = `The seagulls reached you with ${slips} slip${slips === 1 ? "" : "s"} to spare!`;
+    doneScore.textContent = `The seagulls carried you off with ${slips} slip${slips === 1 ? "" : "s"} to spare!`;
     doneEl.classList.remove("hidden");
     confetti(doneEl);
-  }, 900);
+  }, 1700);
 }
 
 function lose() {
@@ -182,9 +191,12 @@ export function newPlankGame() {
   wrong = 0;
   over = false;
   frame = 0;
-  walker.classList.remove("fall", "rescued");
+  walker.classList.remove("fall", "rescued", "hidden");
   walkerImg.classList.remove("wobble", "stepping");
   walkerImg.src = PIRATE_FRAMES[0];
+  flockEl.classList.remove("hidden");
+  carriedEl.classList.add("hidden");
+  carriedEl.classList.remove("flyaway");
   splash.classList.add("hidden");
   doneEl.classList.add("hidden");
   revealEl.className = "plank-reveal";

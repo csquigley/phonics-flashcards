@@ -559,15 +559,21 @@ main {
   50% { transform: translateY(-12%); }
 }
 
+/* Whale container: rises from the horizon and scales up straight toward us
+   (left/top/scale set inline from JS). Inner image just bobs. */
 .whale {
   position: absolute;
-  top: 70%;
-  left: 90%;
-  width: clamp(70px, 20%, 130px);
-  z-index: 3;
-  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1), top 0.6s;
-  animation: bob 1.6s ease-in-out infinite;
+  top: 40%;
+  left: 60%;
+  width: clamp(80px, 24%, 150px);
+  z-index: 2;
+  transform-origin: center bottom;
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              top 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
+
+.whale img { width: 100%; display: block; animation: bob 1.6s ease-in-out infinite; }
 
 .splash {
   position: absolute;
@@ -593,6 +599,21 @@ main {
 }
 
 .plank-options.swap-in { animation: wordSwap 0.4s cubic-bezier(0.18, 1.2, 0.4, 1); }
+
+.plank-reveal {
+  min-height: 1.6rem;
+  margin-top: 0.7rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+
+.plank-reveal.show { opacity: 1; }
+.plank-reveal.right { color: #2e7d32; }
+.plank-reveal.wrong { color: #c62828; }
+.plank-reveal .hl { color: #d81b60; text-decoration: underline; }
 
 .plank-option {
   padding: 0;

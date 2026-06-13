@@ -513,53 +513,67 @@ main {
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.15);
 }
 
+/* Container: walks the plank + scales for perspective (set inline from JS). */
 .walker {
   position: absolute;
-  top: 51%;
-  left: 42%;
-  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  top: 44%;
+  left: 48%;
+  width: clamp(48px, 13%, 92px);
   z-index: 3;
-  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1), top 0.6s, transform 0.6s;
+  transform-origin: bottom center;
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              top 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.walker.wobble { animation: wobble 0.5s; }
+.walker img { width: 100%; display: block; }
+
+/* Inner image: walk bounce / wobble / fall — independent of the container scale. */
+.walker img.stepping { animation: stepBounce 0.5s ease-in-out; }
+
+@keyframes stepBounce {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  35% { transform: translateY(-14%) rotate(-5deg); }
+  70% { transform: translateY(-3%) rotate(4deg); }
+}
+
+.walker img.wobble { animation: wobble 0.5s; }
 
 @keyframes wobble {
   0%, 100% { transform: rotate(0); }
-  25% { transform: rotate(-14deg); }
-  50% { transform: rotate(10deg); }
-  75% { transform: rotate(-6deg); }
+  25% { transform: rotate(-16deg); }
+  50% { transform: rotate(12deg); }
+  75% { transform: rotate(-7deg); }
 }
 
-.walker.fall {
-  top: 78%;
-  transform: rotate(160deg);
-  opacity: 0.55;
+.walker.fall img { animation: fallOff 1s forwards ease-in; }
+
+@keyframes fallOff {
+  to { transform: translateY(160%) rotate(180deg); opacity: 0.4; }
 }
 
-.walker.rescued { top: 62%; animation: bob 0.8s ease-in-out infinite; }
+.walker.rescued img { animation: bob 0.8s ease-in-out infinite; }
 
 @keyframes bob {
   0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+  50% { transform: translateY(-12%); }
 }
 
 .whale {
   position: absolute;
   top: 70%;
   left: 90%;
-  font-size: clamp(2.4rem, 9vw, 3.8rem);
+  width: clamp(70px, 20%, 130px);
   z-index: 3;
-  transform: scaleX(-1); /* face left, toward the plank */
-  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-  animation: bob 1.4s ease-in-out infinite;
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1), top 0.6s;
+  animation: bob 1.6s ease-in-out infinite;
 }
 
 .splash {
   position: absolute;
-  top: 60%;
-  left: 82%;
-  font-size: 2.6rem;
+  top: 64%;
+  left: 74%;
+  font-size: 2.8rem;
   z-index: 4;
 }
 

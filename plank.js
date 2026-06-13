@@ -6,14 +6,21 @@ import { speak, shuffle, randomItem, imagePath, replay, confetti } from "./utils
 
 const STEPS = 6; // 6 correct rescues you; 6 wrong walks you off the end
 
-// Scene positions (percent across the scene), tuned to the drawn plank in
-// images/plank_scene.png. Kid walks the plank left->right toward the open
-// tip; whale swims in the water right->left toward the tip to rescue.
-const KID_START = 42, KID_END = 86;
+// Scene positions (percent), tuned to the perspective plank in
+// images/plank_scene.png. The plank runs from the ship (upper, far, small)
+// down toward the viewer (lower-right, near, big), so as the pirate walks out
+// he moves right + down and scales UP. The whale swims in toward the near end.
+const KID = {
+  startL: 47, endL: 76,   // left %: ship end -> near tip
+  startT: 44, endT: 66,   // top %:  higher (far) -> lower (near)
+  startS: 0.55, endS: 1.15, // scale:  small (far) -> big (near)
+};
 const WHALE_START = 90, WHALE_END = 72;
+const PIRATE_FRAMES = ["images/pirate_1.png", "images/pirate_2.png", "images/pirate_3.png"];
 
 const scene = document.getElementById("plankScene");
 const walker = document.getElementById("walker");
+const walkerImg = document.getElementById("walkerImg");
 const whaleEl = document.getElementById("whale");
 const splash = document.getElementById("splash");
 const optionsEl = document.getElementById("plankOptions");
@@ -57,8 +64,19 @@ function buildQuestion() {
 }
 
 function positions() {
-  walker.style.left = `${KID_START + (KID_END - KID_START) * (wrong / STEPS)}%`;
+  const t = wrong / STEPS;
+  walker.style.left = `${KID.startL + (KID.endL - KID.startL) * t}%`;
+  walker.style.top = `${KID.startT + (KID.endT - KID.startT) * t}%`;
+  walker.style.transform = `scale(${KID.startS + (KID.endS - KID.startS) * t})`;
   whaleEl.style.left = `${WHALE_START - (WHALE_START - WHALE_END) * (correct / STEPS)}%`;
+}
+
+// Cycle the pirate's stride and play a little walk bounce.
+let frame = 0;
+function takeStep() {
+  frame = (frame + 1) % PIRATE_FRAMES.length;
+  walkerImg.src = PIRATE_FRAMES[frame];
+  replay(walkerImg, "stepping");
 }
 
 function renderQuestion() {
@@ -93,8 +111,9 @@ function answer(btn, item) {
     btn.disabled = true;
     wrong++;
     positions();
-    walker.classList.add("wobble");
-    setTimeout(() => walker.classList.remove("wobble"), 500);
+    takeStep(); // a step further out the plank, toward us
+    walkerImg.classList.add("wobble");
+    setTimeout(() => walkerImg.classList.remove("wobble"), 500);
     progressEl.textContent = `🐳 ${correct}/${STEPS}  •  🚶 ${wrong}/${STEPS}`;
     if (wrong >= STEPS) lose();
   }
@@ -103,8 +122,10 @@ function answer(btn, item) {
 function win() {
   over = true;
   speak("You are rescued!");
-  // hop the kid onto the whale
-  walker.style.left = `${WHALE_START - (WHALE_START - WHALE_END)}%`;
+  // hop the pirate onto the whale at the near end of the plank
+  walker.style.left = `${WHALE_END + 1}%`;
+  walker.style.top = "60%";
+  walker.style.transform = "scale(1.05)";
   walker.classList.add("rescued");
   setTimeout(() => {
     doneTitle.textContent = "🐳 Rescued! 🎉";
@@ -132,7 +153,10 @@ export function newPlankGame() {
   correct = 0;
   wrong = 0;
   over = false;
+  frame = 0;
   walker.classList.remove("fall", "rescued");
+  walkerImg.classList.remove("wobble", "stepping");
+  walkerImg.src = PIRATE_FRAMES[0];
   splash.classList.add("hidden");
   doneEl.classList.add("hidden");
   positions();

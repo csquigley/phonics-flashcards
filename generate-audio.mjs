@@ -1,6 +1,6 @@
 // Generates an MP3 pronunciation for each unique vocabulary word into audio/.
-// Uses ElevenLabs Flash v2.5 (cheapest: ~0.5 credits/char) and skips words
-// that already exist, so it's safe to re-run.
+// Uses ElevenLabs Multilingual v2 (highest quality, 1 credit/char) and skips
+// words that already exist, so it's safe to re-run.
 // Usage: ELEVENLABS_API_KEY=sk_... node generate-audio.mjs
 import { CARDS } from "./cards.js";
 import { writeFile, mkdir } from "node:fs/promises";
@@ -10,7 +10,8 @@ const KEY = process.env.ELEVENLABS_API_KEY;
 if (!KEY) { console.error("Set ELEVENLABS_API_KEY first."); process.exit(1); }
 
 const VOICE = "21m00Tcm4TlvDq8ikWAM"; // Rachel — clear default premade voice
-const MODEL = "eleven_flash_v2_5";    // cheapest model (half credits/char)
+const MODEL = "eleven_multilingual_v2"; // highest-quality model
+const VOICE_SETTINGS = { stability: 0.6, similarity_boost: 0.8, style: 0.0, use_speaker_boost: true };
 const CONCURRENCY = 3;
 
 // Unique words only — minimises characters billed.
@@ -29,7 +30,7 @@ async function gen(word) {
       `https://api.elevenlabs.io/v1/text-to-speech/${VOICE}?output_format=mp3_44100_128`,
       { method: "POST",
         headers: { "xi-api-key": KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({ text: word, model_id: MODEL }) });
+        body: JSON.stringify({ text: word, model_id: MODEL, voice_settings: VOICE_SETTINGS }) });
     if (res.status === 429 || res.status >= 500) {
       await new Promise(r => setTimeout(r, 2000 * attempt));
       continue;
@@ -46,7 +47,7 @@ async function gen(word) {
 async function worker(queue) { while (queue.length) await gen(queue.shift()); }
 
 const totalChars = words.reduce((n, w) => n + w.length, 0);
-console.log(`${words.length} unique words, ${totalChars} characters total (~${Math.round(totalChars / 2)} Flash credits).`);
+console.log(`${words.length} unique words, ${totalChars} characters total (~${totalChars} credits at ${MODEL}).`);
 const queue = [...words];
 await Promise.all(Array.from({ length: CONCURRENCY }, () => worker(queue)));
 

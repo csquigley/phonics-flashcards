@@ -4,6 +4,11 @@ import { CARDS } from "./cards.js";
 // Words we have a pre-recorded ElevenLabs clip for (audio/<word>.mp3).
 const AUDIO_WORDS = new Set(CARDS.flatMap(c => c.words.map(w => w.word)));
 
+// Pre-recorded clips for whole phrases (keyed by lowercased text).
+const PHRASES = {
+  "you did it! you escaped!": "audio/escaped.mp3",
+};
+
 // Does this word contain the grapheme? Split digraphs (a_e) match
 // vowel ... final e; everything else is a substring check.
 export function wordMatches(word, grapheme) {
@@ -35,10 +40,11 @@ let currentAudio = null;
 // fall back to the browser's speech synth (used for phrases like "You escaped!").
 export function speak(text) {
   const key = String(text).toLowerCase().trim();
-  if (AUDIO_WORDS.has(key)) {
+  const src = AUDIO_WORDS.has(key) ? `audio/${key}.mp3` : PHRASES[key];
+  if (src) {
     if (currentAudio) currentAudio.pause();
     if ("speechSynthesis" in window) speechSynthesis.cancel();
-    currentAudio = new Audio(`audio/${key}.mp3`);
+    currentAudio = new Audio(src);
     currentAudio.play().catch(() => synthSpeak(text)); // fall back if blocked
     return;
   }

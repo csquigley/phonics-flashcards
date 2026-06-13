@@ -11,6 +11,9 @@ if (!KEY) { console.error("Set ELEVENLABS_API_KEY first."); process.exit(1); }
 
 const VOICE = "21m00Tcm4TlvDq8ikWAM"; // Rachel — clear default premade voice
 const MODEL = "eleven_multilingual_v2"; // highest-quality model
+// Per-word model overrides: multilingual_v2 mispronounces "dune" (DooNeh),
+// so use the English-tuned turbo model for it.
+const MODEL_OVERRIDES = { dune: "eleven_turbo_v2_5" };
 const VOICE_SETTINGS = { stability: 0.6, similarity_boost: 0.8, style: 0.0, use_speaker_boost: true };
 const CONCURRENCY = 3;
 
@@ -30,7 +33,7 @@ async function gen(word) {
       `https://api.elevenlabs.io/v1/text-to-speech/${VOICE}?output_format=mp3_44100_128`,
       { method: "POST",
         headers: { "xi-api-key": KEY, "Content-Type": "application/json" },
-        body: JSON.stringify({ text: word, model_id: MODEL, voice_settings: VOICE_SETTINGS }) });
+        body: JSON.stringify({ text: word, model_id: MODEL_OVERRIDES[word] || MODEL, voice_settings: VOICE_SETTINGS }) });
     if (res.status === 429 || res.status >= 500) {
       await new Promise(r => setTimeout(r, 2000 * attempt));
       continue;

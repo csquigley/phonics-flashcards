@@ -154,7 +154,7 @@ function answer(btn, item) {
 
 function win() {
   over = true;
-  speak("You escaped!");
+  speak("You did it! You escaped!");
   // Swap the pirate + flock for the combined "carried away" sprite at the
   // pirate's current spot, then let it soar up and off the top of the scene.
   const t = wrong / MAX_WRONG;

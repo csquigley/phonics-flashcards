@@ -35,3 +35,14 @@ OPENAI_API_KEY=sk-... node generate-images.mjs
 ```
 
 Word lists and image prompts live in `cards.js`.
+
+## Regenerating the audio
+
+Each vocabulary word has a spoken clip in `audio/` generated with ElevenLabs
+(Flash v2.5, the cheapest model). The app plays these clips and falls back to
+the browser's speech synthesis for anything without a clip. To regenerate
+(existing files are skipped):
+
+```bash
+ELEVENLABS_API_KEY=sk_... node generate-audio.mjs
+```

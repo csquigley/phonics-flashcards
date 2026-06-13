@@ -1,4 +1,8 @@
 // Shared helpers for the flashcards and games.
+import { CARDS } from "./cards.js";
+
+// Words we have a pre-recorded ElevenLabs clip for (audio/<word>.mp3).
+const AUDIO_WORDS = new Set(CARDS.flatMap(c => c.words.map(w => w.word)));
 
 // Does this word contain the grapheme? Split digraphs (a_e) match
 // vowel ... final e; everything else is a substring check.
@@ -25,7 +29,23 @@ export function highlight(word, grapheme) {
   return word;
 }
 
+let currentAudio = null;
+
+// Play a word: use the recorded ElevenLabs clip when we have one, otherwise
+// fall back to the browser's speech synth (used for phrases like "You escaped!").
 export function speak(text) {
+  const key = String(text).toLowerCase().trim();
+  if (AUDIO_WORDS.has(key)) {
+    if (currentAudio) currentAudio.pause();
+    if ("speechSynthesis" in window) speechSynthesis.cancel();
+    currentAudio = new Audio(`audio/${key}.mp3`);
+    currentAudio.play().catch(() => synthSpeak(text)); // fall back if blocked
+    return;
+  }
+  synthSpeak(text);
+}
+
+function synthSpeak(text) {
   if (!("speechSynthesis" in window)) return;
   speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);

@@ -668,6 +668,100 @@ main {
   animation: shake 0.45s;
 }
 
+/* ================= Build a Word ================= */
+.build-image {
+  width: min(46vw, 200px);
+  height: min(46vw, 200px);
+  object-fit: contain;
+  border-radius: 18px;
+  background: #fff;
+  border: 5px solid #ffd54f;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.14);
+}
+
+.build-image.swap-in { animation: wordSwap 0.4s cubic-bezier(0.18, 1.2, 0.4, 1); }
+
+.build-solved {
+  height: 2rem;
+  font-size: 1.7rem;
+  font-weight: bold;
+  color: #1565c0;
+  opacity: 0;
+  transition: opacity 0.3s;
+  margin-top: 0.5rem;
+}
+
+.build-solved.show { opacity: 1; }
+.build-solved .hl { color: #d81b60; text-decoration: underline; }
+
+.build-slots {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  margin: 0.4rem 0 1.1rem;
+  min-height: 3.2rem;
+}
+
+.letter-slot {
+  width: clamp(2.2rem, 9vw, 3rem);
+  height: clamp(2.6rem, 11vw, 3.6rem);
+  border-radius: 12px;
+  border: 3px dashed #b0bec5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1.4rem, 6vw, 2rem);
+  font-weight: bold;
+  color: #1565c0;
+  background: #f7fbff;
+}
+
+.letter-slot.filled {
+  border-style: solid;
+  border-color: #4fc3f7;
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.letter-slot.correct {
+  border-color: #43a047;
+  background: #e9f9e8;
+  color: #2e7d32;
+  animation: correctBounce 0.6s cubic-bezier(0.18, 1.6, 0.4, 1);
+}
+
+.letter-slot.wrong { border-color: #e53935; background: #ffeaea; animation: shake 0.45s; }
+
+.build-pool {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+  max-width: min(96vw, 560px);
+}
+
+.letter-tile {
+  width: clamp(2.4rem, 10vw, 3.2rem);
+  height: clamp(2.8rem, 12vw, 3.8rem);
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(140deg, #7e57c2, #5b3fa0);
+  color: #fff;
+  font-family: inherit;
+  font-size: clamp(1.4rem, 6vw, 2rem);
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 5px 12px rgba(91, 63, 160, 0.35);
+  transition: transform 0.12s, opacity 0.2s;
+}
+
+.letter-tile:hover:not(:disabled) { transform: translateY(-4px) scale(1.06); }
+.letter-tile:active:not(:disabled) { transform: scale(0.92); }
+.letter-tile.used { opacity: 0.25; pointer-events: none; box-shadow: none; }
+
 /* ================= Memory game (full screen) ================= */
 body.memory-active header,
 body.memory-active .keys { display: none; }

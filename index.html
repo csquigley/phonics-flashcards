@@ -16,6 +16,7 @@
       <button data-tab="match">🎯 Match</button>
       <button data-tab="odd">🕵️ Odd One Out</button>
       <button data-tab="plank">🏴‍☠️ Walk the Plank</button>
+      <button data-tab="build">🔡 Build a Word</button>
       <button data-tab="memory">🧠 Memory</button>
     </nav>
   </header>
@@ -123,6 +124,31 @@
           <p class="match-done-title" id="plankDoneTitle"></p>
           <p class="match-done-score" id="plankDoneScore"></p>
           <button class="pill big" id="plankAgain">Play again 🎉</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Build a Word ================= -->
+    <section id="view-build" class="view hidden">
+      <div class="match-top">
+        <span class="match-progress" id="buildProgress"></span>
+        <span class="match-stars" id="buildStars"></span>
+        <button class="pill" id="buildSpeak">🔊 Hear it again</button>
+        <button class="pill" id="buildReset">🔄 New round</button>
+      </div>
+
+      <p class="match-question">Listen, then tap the letters to build the word! 🔡</p>
+      <img class="build-image" id="buildImage" alt="">
+      <div class="build-solved" id="buildSolved"></div>
+      <div class="build-slots" id="buildSlots"></div>
+      <div class="build-pool" id="buildPool"></div>
+      <button class="pill" id="buildClear">⌫ Clear</button>
+
+      <div class="match-done hidden" id="buildDone">
+        <div class="match-done-card">
+          <p class="match-done-title" id="buildDoneTitle"></p>
+          <p class="match-done-score" id="buildDoneScore"></p>
+          <button class="pill big" id="buildAgain">Play again 🎉</button>
         </div>
       </div>
     </section>

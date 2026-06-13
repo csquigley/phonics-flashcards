@@ -3,16 +3,18 @@ import { highlight, speak, replay, shuffle, imagePath } from "./utils.js";
 import { initMatch, newMatchRound } from "./match.js";
 import { initMemory, newMemoryGame } from "./memory.js";
 import { initOdd, newOddRound } from "./oddone.js";
+import { initPlank, newPlankGame } from "./plank.js";
 
 // ---------------- Tabs ----------------
 const views = {
   flash: document.getElementById("view-flash"),
   match: document.getElementById("view-match"),
   odd: document.getElementById("view-odd"),
+  plank: document.getElementById("view-plank"),
   memory: document.getElementById("view-memory"),
 };
 const tabButtons = document.querySelectorAll(".tabs button");
-const initialized = { match: false, odd: false, memory: false };
+const initialized = { match: false, odd: false, plank: false, memory: false };
 
 function showTab(name) {
   tabButtons.forEach(b => b.classList.toggle("active", b.dataset.tab === name));
@@ -25,6 +27,9 @@ function showTab(name) {
   } else if (name === "odd") {
     initialized.odd ? newOddRound() : initOdd();
     initialized.odd = true;
+  } else if (name === "plank") {
+    initialized.plank ? newPlankGame() : initPlank();
+    initialized.plank = true;
   } else if (name === "memory") {
     initialized.memory ? newMemoryGame() : initMemory(() => showTab("flash"));
     initialized.memory = true;

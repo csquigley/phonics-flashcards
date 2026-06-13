@@ -15,6 +15,7 @@
       <button data-tab="flash" class="active">🃏 Flashcards</button>
       <button data-tab="match">🎯 Match</button>
       <button data-tab="odd">🕵️ Odd One Out</button>
+      <button data-tab="plank">🏴‍☠️ Walk the Plank</button>
       <button data-tab="memory">🧠 Memory</button>
     </nav>
   </header>
@@ -92,6 +93,36 @@
           <p class="match-done-title" id="oddDoneTitle"></p>
           <p class="match-done-score" id="oddDoneScore"></p>
           <button class="pill big" id="oddAgain">Play again 🎉</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Walk the Plank ================= -->
+    <section id="view-plank" class="view hidden">
+      <div class="match-top">
+        <span class="match-progress" id="plankProgress"></span>
+        <button class="pill" id="plankSpeak">🔊 Hear it again</button>
+        <button class="pill" id="plankReset">🔄 New game</button>
+      </div>
+
+      <div class="plank-scene" id="plankScene">
+        <div class="clouds">☁️</div>
+        <div class="sea"></div>
+        <div class="ship">🚢</div>
+        <div class="plank-board"></div>
+        <div class="walker" id="walker">🧒</div>
+        <div class="whale" id="whale">🐳</div>
+        <div class="splash hidden" id="splash">💦</div>
+      </div>
+
+      <p class="plank-instruct">🎧 Listen, then tap the picture that matches the word!</p>
+      <div class="plank-options" id="plankOptions"></div>
+
+      <div class="match-done hidden" id="plankDone">
+        <div class="match-done-card">
+          <p class="match-done-title" id="plankDoneTitle"></p>
+          <p class="match-done-score" id="plankDoneScore"></p>
+          <button class="pill big" id="plankAgain">Play again 🎉</button>
         </div>
       </div>
     </section>

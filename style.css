@@ -493,6 +493,181 @@ main {
 
 .odd-images.revealed .odd-caption { opacity: 1; transform: translateY(0); }
 
+/* ================= Walk the Plank ================= */
+.plank-instruct {
+  font-size: 1.2rem;
+  color: #5b3fa0;
+  font-weight: bold;
+  margin: 0.9rem 0 0.6rem;
+  text-align: center;
+}
+
+.plank-scene {
+  position: relative;
+  width: min(96vw, 720px);
+  height: clamp(220px, 42vw, 320px);
+  border-radius: 22px;
+  overflow: hidden;
+  background: linear-gradient(#bbe9ff 0%, #d9f3ff 55%, #d9f3ff 55%);
+  border: 6px solid #ffd54f;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.15);
+}
+
+.plank-scene .clouds {
+  position: absolute;
+  top: 8%;
+  left: 0;
+  font-size: 2rem;
+  opacity: 0.85;
+  animation: drift 24s linear infinite;
+}
+
+@keyframes drift {
+  from { transform: translateX(-15%); }
+  to   { transform: translateX(115%); }
+}
+
+.sea {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 45%;
+  background: linear-gradient(#3aa0e0, #1f6fb0);
+  background-size: 28px 100%;
+  animation: waves 1.6s linear infinite;
+}
+
+.sea::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0;
+  width: 100%;
+  height: 14px;
+  background: radial-gradient(circle at 14px -2px, transparent 9px, #3aa0e0 10px) repeat-x;
+  background-size: 28px 14px;
+  animation: waves 1.6s linear infinite;
+}
+
+@keyframes waves {
+  from { background-position-x: 0; }
+  to   { background-position-x: 28px; }
+}
+
+.ship {
+  position: absolute;
+  left: 1%;
+  top: 40%;
+  font-size: clamp(2.4rem, 8vw, 3.6rem);
+  z-index: 2;
+}
+
+.plank-board {
+  position: absolute;
+  left: 11%;
+  top: 52%;
+  width: 62%;
+  height: 13px;
+  background: linear-gradient(#a9712f, #7a4e1d);
+  border-radius: 3px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.25);
+  z-index: 1;
+}
+
+.walker {
+  position: absolute;
+  top: 35%;
+  left: 16%;
+  font-size: clamp(1.8rem, 6vw, 2.6rem);
+  z-index: 3;
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1), top 0.6s, transform 0.6s;
+}
+
+.walker.wobble { animation: wobble 0.5s; }
+
+@keyframes wobble {
+  0%, 100% { transform: rotate(0); }
+  25% { transform: rotate(-14deg); }
+  50% { transform: rotate(10deg); }
+  75% { transform: rotate(-6deg); }
+}
+
+.walker.fall {
+  top: 78%;
+  transform: rotate(160deg);
+  opacity: 0.55;
+}
+
+.walker.rescued { top: 50%; animation: bob 0.8s ease-in-out infinite; }
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+.whale {
+  position: absolute;
+  top: 56%;
+  left: 94%;
+  font-size: clamp(2.4rem, 9vw, 3.8rem);
+  z-index: 3;
+  transform: scaleX(-1); /* face left, toward the plank */
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: bob 1.4s ease-in-out infinite;
+}
+
+.splash {
+  position: absolute;
+  top: 58%;
+  left: 64%;
+  font-size: 2.6rem;
+  z-index: 4;
+}
+
+.splash.splashing { animation: splashUp 0.9s ease-out; }
+
+@keyframes splashUp {
+  0% { transform: translateY(20px) scale(0.4); opacity: 0; }
+  40% { transform: translateY(-14px) scale(1.2); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.plank-options {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.6rem, 2vw, 1.2rem);
+  width: min(96vw, 620px);
+}
+
+.plank-options.swap-in { animation: wordSwap 0.4s cubic-bezier(0.18, 1.2, 0.4, 1); }
+
+.plank-option {
+  padding: 0;
+  border: 5px solid #4fc3f7;
+  border-radius: 18px;
+  background: #fff;
+  cursor: pointer;
+  overflow: hidden;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+  transition: transform 0.15s, border-color 0.2s, opacity 0.2s;
+}
+
+.plank-option img { width: 100%; aspect-ratio: 1; object-fit: contain; display: block; }
+
+.plank-option:hover:not(:disabled) { transform: translateY(-5px) scale(1.04); }
+
+.plank-option.correct {
+  border-color: #43a047;
+  animation: correctBounce 0.6s cubic-bezier(0.18, 1.6, 0.4, 1);
+}
+
+.plank-option.wrong {
+  border-color: #e53935;
+  opacity: 0.5;
+  animation: shake 0.45s;
+}
+
 /* ================= Memory game (full screen) ================= */
 body.memory-active header,
 body.memory-active .keys { display: none; }

@@ -11,9 +11,10 @@ if (!KEY) { console.error("Set ELEVENLABS_API_KEY first."); process.exit(1); }
 
 const VOICE = "21m00Tcm4TlvDq8ikWAM"; // Rachel — clear default premade voice
 const MODEL = "eleven_multilingual_v2"; // highest-quality model
-// Per-word model overrides: multilingual_v2 mispronounces "dune" (DooNeh),
-// so use the English-tuned turbo model for it.
-const MODEL_OVERRIDES = { dune: "eleven_turbo_v2_5" };
+// Per-word model overrides: multilingual_v2 mispronounces some "magic e"
+// words (dune -> DooNeh, mule, kite), so use the English-tuned turbo model.
+const TURBO = "eleven_turbo_v2_5";
+const MODEL_OVERRIDES = { dune: TURBO, mule: TURBO, kite: TURBO };
 const VOICE_SETTINGS = { stability: 0.6, similarity_boost: 0.8, style: 0.0, use_speaker_boost: true };
 const CONCURRENCY = 3;
 

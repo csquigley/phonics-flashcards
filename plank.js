@@ -6,10 +6,11 @@ import { speak, shuffle, randomItem, imagePath, replay, confetti } from "./utils
 
 const STEPS = 6; // 6 correct rescues you; 6 wrong walks you off the end
 
-// Scene positions (percent across the scene). Kid walks left->right toward
-// the open end; whale swims right->left toward the plank.
-const KID_START = 16, KID_END = 70;
-const WHALE_START = 94, WHALE_END = 70;
+// Scene positions (percent across the scene), tuned to the drawn plank in
+// images/plank_scene.png. Kid walks the plank left->right toward the open
+// tip; whale swims in the water right->left toward the tip to rescue.
+const KID_START = 42, KID_END = 86;
+const WHALE_START = 90, WHALE_END = 72;
 
 const scene = document.getElementById("plankScene");
 const walker = document.getElementById("walker");

@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phonics Flashcards</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="bg-letters" aria-hidden="true"></div>
+
+  <header>
+    <h1>🔤 Phonics Fun</h1>
+    <nav class="tabs">
+      <button data-tab="flash" class="active">🃏 Flashcards</button>
+      <button data-tab="match">🎯 Match</button>
+      <button data-tab="odd">🕵️ Odd One Out</button>
+      <button data-tab="memory">🧠 Memory</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- ================= Flashcards ================= -->
+    <section id="view-flash" class="view">
+      <div class="filters" id="filters"></div>
+
+      <div class="card-scene" id="scene">
+        <div class="card" id="card" tabindex="0" aria-label="Flashcard — click or press Space to flip">
+          <div class="card-face card-front">
+            <span class="grapheme" id="grapheme"></span>
+            <span class="hint">tap to flip</span>
+          </div>
+          <div class="card-face card-back">
+            <div class="word-stage" id="wordStage">
+              <img id="cardImage" alt="">
+              <div class="word" id="word"></div>
+            </div>
+            <div class="dots" id="dots"></div>
+            <button class="speak" id="speakBtn" title="Hear the word">🔊</button>
+            <span class="hint back-hint">tap for next word</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button id="prevBtn" title="Previous sound (←)">◀</button>
+        <span class="progress" id="progress"></span>
+        <button id="nextBtn" title="Next sound (→)">▶</button>
+        <button id="shuffleBtn" title="Shuffle deck">🔀</button>
+      </div>
+      <p class="keys">← → change sound &nbsp;•&nbsp; Space flips &nbsp;•&nbsp; ↑ ↓ change word</p>
+    </section>
+
+    <!-- ================= Match the sound ================= -->
+    <section id="view-match" class="view hidden">
+      <div class="match-top">
+        <span class="match-progress" id="matchProgress"></span>
+        <span class="match-stars" id="matchStars"></span>
+        <button class="pill" id="matchReset">🔄 New round</button>
+      </div>
+
+      <div class="match-stage" id="matchStage">
+        <p class="match-question">Which sound do you hear?</p>
+        <img class="match-image" id="matchImage" alt="">
+        <div class="match-options" id="matchOptions"></div>
+      </div>
+
+      <div class="match-done hidden" id="matchDone">
+        <div class="match-done-card">
+          <p class="match-done-title" id="matchDoneTitle"></p>
+          <p class="match-done-score" id="matchDoneScore"></p>
+          <button class="pill big" id="matchAgain">Play again 🎉</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Odd one out ================= -->
+    <section id="view-odd" class="view hidden">
+      <div class="match-top">
+        <span class="match-progress" id="oddProgress"></span>
+        <span class="match-stars" id="oddStars"></span>
+        <button class="pill" id="oddReset">🔄 New round</button>
+      </div>
+
+      <div class="odd-stage" id="oddStage">
+        <p class="match-question">Two pictures share a sound — tap the one that <em>doesn't</em> belong!</p>
+        <div class="odd-images" id="oddImages"></div>
+      </div>
+
+      <div class="match-done hidden" id="oddDone">
+        <div class="match-done-card">
+          <p class="match-done-title" id="oddDoneTitle"></p>
+          <p class="match-done-score" id="oddDoneScore"></p>
+          <button class="pill big" id="oddAgain">Play again 🎉</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Memory (full screen) ================= -->
+    <section id="view-memory" class="hidden">
+      <div class="memory-bar">
+        <button class="pill" id="memoryExit">⬅ Back</button>
+        <span class="memory-title">🧠 Memory — match the picture to its sound</span>
+        <span class="memory-moves" id="memoryMoves"></span>
+        <button class="pill" id="memoryReset">🔄 Restart</button>
+      </div>
+      <div class="memory-grid" id="memoryGrid"></div>
+      <div class="memory-win hidden" id="memoryWin">
+        <div class="memory-win-card">
+          <p>🏆 You found them all!</p>
+          <p class="memory-win-moves" id="memoryWinMoves"></p>
+          <button class="pill big" id="memoryAgain">Play again 🎉</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

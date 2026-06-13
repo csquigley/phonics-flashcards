@@ -11,16 +11,16 @@ const STEPS = 6; // 6 correct rescues you; 6 wrong walks you off the end
 // down toward the viewer (lower-right, near, big), so as the pirate walks out
 // he moves right + down and scales UP.
 const KID = {
-  startL: 47, endL: 74,   // left %: ship end -> near tip
-  startT: 42, endT: 64,   // top %:  higher (far) -> lower (near)
+  startL: 44, endL: 84,   // left %: deck end -> near tip
+  startT: 47, endT: 64,   // top %:  higher (far) -> lower (near)
   startS: 0.5, endS: 1.15, // scale:  small (far) -> big (near)
 };
 // The whale rises from the horizon and barrels straight at the viewer:
-// nearly fixed left, dropping from the horizon and scaling way up.
+// nearly fixed left, dropping from the horizon line and scaling way up.
 const WHALE = {
-  startL: 60, endL: 64,
-  startT: 38, endT: 62,
-  startS: 0.16, endS: 1.0,
+  startL: 66, endL: 74,
+  startT: 45, endT: 68,
+  startS: 0.15, endS: 1.05,
 };
 const PIRATE_FRAMES = ["images/pirate_1.png", "images/pirate_2.png", "images/pirate_3.png"];
 

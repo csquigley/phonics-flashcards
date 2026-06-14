@@ -1,7 +1,7 @@
 // Odd-one-out game: three pictures, two share a sound, one doesn't.
 // Click the one with the different sound.
 import { CARDS } from "./cards.js";
-import { wordMatches, highlight, speak, shuffle, randomItem, imagePath, replay, confetti } from "./utils.js";
+import { wordMatches, highlight, speak, speakTimes, speakSequence, shuffle, randomItem, imagePath, replay, confetti } from "./utils.js";
 
 const ROUND_SIZE = 8;
 
@@ -70,15 +70,30 @@ function renderQuestion() {
   q.items.forEach(item => {
     const fig = document.createElement("figure");
     fig.className = "odd-item";
+    // No word shown — this is a listening task. A speaker button replays this
+    // picture's word; the caption only fills in after the answer.
     fig.innerHTML = `
-      <img src="${imagePath(item.card.id, item.word)}" alt="${item.word}">
-      <figcaption class="odd-caption">${item.word}</figcaption>`;
+      <div class="odd-pic">
+        <img src="${imagePath(item.card.id, item.word)}" alt="${item.word}">
+        <button class="odd-hear" title="Hear this word">🔊</button>
+      </div>
+      <figcaption class="odd-caption"></figcaption>`;
+    fig.querySelector(".odd-hear").addEventListener("click", e => {
+      e.stopPropagation(); // don't select when just listening
+      speakTimes(item.word, 3);
+    });
     fig.addEventListener("click", () => answer(fig, item));
     imagesEl.appendChild(fig);
   });
   progressEl.textContent = `${qIndex + 1} / ${questions.length}`;
   renderStars();
   replay(stage, "swap-in");
+  hearAll(); // play the three words in sequence on load
+}
+
+// Play all three words once, in order, with a pause between.
+function hearAll() {
+  setTimeout(() => speakSequence(questions[qIndex].items.map(it => it.word), 650), 350);
 }
 
 function answer(fig, item) {
@@ -126,5 +141,6 @@ export function newOddRound() {
 export function initOdd() {
   document.getElementById("oddReset").addEventListener("click", newOddRound);
   document.getElementById("oddAgain").addEventListener("click", newOddRound);
+  document.getElementById("oddHear").addEventListener("click", hearAll);
   newOddRound();
 }

@@ -1,6 +1,6 @@
 // Match game: see a picture, choose the sound you hear from 4 large options.
 import { CARDS } from "./cards.js";
-import { wordMatches, highlight, speak, shuffle, randomItem, imagePath, replay, confetti } from "./utils.js";
+import { wordMatches, highlight, speak, speakTimes, shuffle, randomItem, imagePath, replay, confetti } from "./utils.js";
 
 const ROUND_SIZE = 8;
 const OPTION_COUNT = 4;
@@ -44,8 +44,10 @@ function renderQuestion() {
   locked = false;
   imageEl.src = imagePath(q.card.id, q.word);
   imageEl.alt = q.word;
-  wordEl.textContent = q.word; // show the word (plain — sound not given away yet)
+  // Don't show the word — this is a listening task. Play it three times.
+  wordEl.textContent = "";
   wordEl.classList.remove("revealed");
+  setTimeout(() => speakTimes(q.word, 3), 350);
   optionsEl.innerHTML = "";
   q.options.forEach(opt => {
     const btn = document.createElement("button");
@@ -99,6 +101,8 @@ export function newMatchRound() {
 }
 
 export function initMatch() {
+  // Tap the picture to hear the word again.
+  imageEl.addEventListener("click", () => speakTimes(questions[qIndex].word, 3));
   document.getElementById("matchReset").addEventListener("click", newMatchRound);
   document.getElementById("matchAgain").addEventListener("click", newMatchRound);
   newMatchRound();

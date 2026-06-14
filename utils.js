@@ -35,20 +35,64 @@ export function highlight(word, grapheme) {
 }
 
 let currentAudio = null;
+let seqToken = 0; // bumped to cancel any in-flight sequence
 
-// Play a word: use the recorded ElevenLabs clip when we have one, otherwise
+function srcForKey(key) {
+  if (AUDIO_WORDS.has(key)) return `audio/${key}.mp3`;
+  return PHRASES[key] || null;
+}
+
+function stopAll() {
+  seqToken++; // invalidate any running sequence
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if ("speechSynthesis" in window) speechSynthesis.cancel();
+}
+
+// Play a word once: use the recorded ElevenLabs clip when we have one, else
 // fall back to the browser's speech synth (used for phrases like "You escaped!").
 export function speak(text) {
-  const key = String(text).toLowerCase().trim();
-  const src = AUDIO_WORDS.has(key) ? `audio/${key}.mp3` : PHRASES[key];
+  stopAll();
+  const src = srcForKey(String(text).toLowerCase().trim());
   if (src) {
-    if (currentAudio) currentAudio.pause();
-    if ("speechSynthesis" in window) speechSynthesis.cancel();
     currentAudio = new Audio(src);
     currentAudio.play().catch(() => synthSpeak(text)); // fall back if blocked
     return;
   }
   synthSpeak(text);
+}
+
+// Play a list of words/phrases in order, each separated by `gap` ms. Waits for
+// each clip to finish before pausing then starting the next. Cancels any
+// previous sequence (or single speak) so they never overlap.
+export function speakSequence(items, gap = 500) {
+  stopAll();
+  const token = seqToken;
+  let i = 0;
+  const next = () => {
+    if (token !== seqToken || i >= items.length) return;
+    const text = items[i++];
+    const src = srcForKey(String(text).toLowerCase().trim());
+    const after = () => { if (token === seqToken) setTimeout(next, gap); };
+    if (src) {
+      currentAudio = new Audio(src);
+      currentAudio.addEventListener("ended", after, { once: true });
+      currentAudio.addEventListener("error", after, { once: true });
+      currentAudio.play().catch(after);
+    } else if ("speechSynthesis" in window) {
+      const u = new SpeechSynthesisUtterance(text);
+      u.rate = 0.8;
+      u.onend = after;
+      speechSynthesis.speak(u);
+    } else {
+      after();
+    }
+  };
+  next();
+}
+
+// Play the same word `n` times with a pause between each.
+export function speakTimes(text, n = 3, gap = 500) {
+  speakSequence(Array(n).fill(text), gap);
 }
 
 function synthSpeak(text) {

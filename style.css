@@ -345,10 +345,15 @@ main {
   box-shadow: 0 10px 26px rgba(0, 0, 0, 0.15);
 }
 
+.match-image.listenable { cursor: pointer; }
+
+.match-hint { font-size: 0.85rem; color: #999; }
+
 .match-word {
   font-size: clamp(1.8rem, 7vw, 2.6rem);
   font-weight: bold;
   color: #1565c0;
+  min-height: 1.2em;
 }
 
 .match-word.revealed { transform: scale(1.06); transition: transform 0.2s; }
@@ -461,6 +466,8 @@ main {
   cursor: pointer;
 }
 
+.odd-pic { position: relative; width: 100%; }
+
 .odd-item img {
   width: 100%;
   aspect-ratio: 1;
@@ -473,6 +480,25 @@ main {
 }
 
 .odd-item:hover img { transform: translateY(-5px) scale(1.03); }
+
+.odd-hear {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  width: 2.4rem;
+  height: 2.4rem;
+  border-radius: 50%;
+  border: none;
+  background: rgba(91, 63, 160, 0.9);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.12s;
+}
+
+.odd-hear:hover { transform: scale(1.12); }
+.odd-hear:active { transform: scale(0.92); }
 
 .odd-item.correct img {
   border-color: #43a047;
@@ -493,6 +519,7 @@ main {
   font-size: clamp(1.1rem, 3.4vw, 1.6rem);
   font-weight: bold;
   color: #1565c0;
+  min-height: 1.4em; /* reserve space; word only appears on reveal */
   transition: transform 0.2s;
 }
 

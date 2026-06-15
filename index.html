@@ -17,6 +17,7 @@
       <button data-tab="odd">🕵️ Odd One Out</button>
       <button data-tab="plank">🏴‍☠️ Walk the Plank</button>
       <button data-tab="build">🔡 Build a Word</button>
+      <button data-tab="scenes">🔍 Find It</button>
       <button data-tab="memory">🧠 Memory</button>
     </nav>
   </header>
@@ -150,6 +151,31 @@
           <p class="match-done-title" id="buildDoneTitle"></p>
           <p class="match-done-score" id="buildDoneScore"></p>
           <button class="pill big" id="buildAgain">Play again 🎉</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Find It (scenes) ================= -->
+    <section id="view-scenes" class="view hidden">
+      <div class="match-top">
+        <span class="match-progress" id="scenesProgress"></span>
+        <span class="scenes-hearts" id="scenesHearts"></span>
+        <button class="pill" id="scenesReset">🔄 Restart</button>
+      </div>
+
+      <div class="scenes-prompt">
+        <span class="scenes-find">Find:</span>
+        <span class="scenes-word" id="scenesWord"></span>
+        <button class="speak-btn" id="scenesSpeak" title="Hear it again">🔊</button>
+      </div>
+
+      <div class="scene-stage" id="sceneStage"></div>
+
+      <div class="scenes-banner hidden" id="scenesBanner">
+        <div class="scenes-banner-card">
+          <p class="scenes-banner-title" id="scenesBannerTitle"></p>
+          <p class="scenes-banner-text" id="scenesBannerText"></p>
+          <button class="pill big" id="scenesBannerBtn"></button>
         </div>
       </div>
     </section>

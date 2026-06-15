@@ -3,6 +3,7 @@
 // words that already exist, so it's safe to re-run.
 // Usage: ELEVENLABS_API_KEY=sk_... node generate-audio.mjs
 import { CARDS } from "./cards.js";
+import { SCENE_WORDS } from "./scenes-data.js";
 import { writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
 
@@ -19,8 +20,9 @@ const MODEL_OVERRIDES = { dune: TURBO, mule: TURBO, kite: TURBO, shell: TURBO, s
 const VOICE_SETTINGS = { stability: 0.6, similarity_boost: 0.8, style: 0.0, use_speaker_boost: true };
 const CONCURRENCY = 3;
 
-// Unique words only — minimises characters billed.
-const words = [...new Set(CARDS.flatMap(c => c.words.map(w => w.word)))];
+// Unique words only — minimises characters billed. Includes flashcard
+// vocabulary and the Find-It scene words.
+const words = [...new Set([...CARDS.flatMap(c => c.words.map(w => w.word)), ...SCENE_WORDS])];
 
 await mkdir("audio", { recursive: true });
 

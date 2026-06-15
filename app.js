@@ -5,6 +5,7 @@ import { initMemory, newMemoryGame } from "./memory.js";
 import { initOdd, newOddRound } from "./oddone.js";
 import { initPlank, newPlankGame } from "./plank.js";
 import { initBuild, newBuildRound } from "./buildword.js";
+import { initScenes, newScenesGame } from "./scenes.js";
 
 // ---------------- Tabs ----------------
 const views = {
@@ -13,10 +14,11 @@ const views = {
   odd: document.getElementById("view-odd"),
   plank: document.getElementById("view-plank"),
   build: document.getElementById("view-build"),
+  scenes: document.getElementById("view-scenes"),
   memory: document.getElementById("view-memory"),
 };
 const tabButtons = document.querySelectorAll(".tabs button");
-const initialized = { match: false, odd: false, plank: false, build: false, memory: false };
+const initialized = { match: false, odd: false, plank: false, build: false, scenes: false, memory: false };
 
 function showTab(name) {
   tabButtons.forEach(b => b.classList.toggle("active", b.dataset.tab === name));
@@ -35,6 +37,9 @@ function showTab(name) {
   } else if (name === "build") {
     initialized.build ? newBuildRound() : initBuild();
     initialized.build = true;
+  } else if (name === "scenes") {
+    initialized.scenes ? newScenesGame() : initScenes();
+    initialized.scenes = true;
   } else if (name === "memory") {
     initialized.memory ? newMemoryGame() : initMemory(() => showTab("flash"));
     initialized.memory = true;

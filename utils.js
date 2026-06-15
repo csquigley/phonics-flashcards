@@ -1,8 +1,12 @@
 // Shared helpers for the flashcards and games.
 import { CARDS } from "./cards.js";
+import { SCENE_WORDS } from "./scenes-data.js";
 
 // Words we have a pre-recorded ElevenLabs clip for (audio/<word>.mp3).
-const AUDIO_WORDS = new Set(CARDS.flatMap(c => c.words.map(w => w.word)));
+const AUDIO_WORDS = new Set([
+  ...CARDS.flatMap(c => c.words.map(w => w.word)),
+  ...SCENE_WORDS,
+]);
 
 // Pre-recorded clips for whole phrases (keyed by lowercased text).
 const PHRASES = {

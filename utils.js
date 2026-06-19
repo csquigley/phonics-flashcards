@@ -2,6 +2,7 @@
 import { CARDS } from "./cards.js";
 import { SCENE_WORDS } from "./scenes-data.js";
 import { BRICKS_WORDS } from "./bricks-data.js";
+import { PHONICS_WORDS } from "./bricksphonics-data.js";
 
 // Normalise a word/phrase to its audio-file key: lowercase, drop dots, spaces
 // to underscores ("P.E." -> "pe", "social studies" -> "social_studies").
@@ -14,6 +15,7 @@ const AUDIO_WORDS = new Set([
   ...CARDS.flatMap(c => c.words.map(w => audioKey(w.word))),
   ...SCENE_WORDS.map(audioKey),
   ...BRICKS_WORDS.map(w => w.key),
+  ...PHONICS_WORDS.map(w => w.key),
 ]);
 
 // Pre-recorded clips for whole phrases (keyed by lowercased text).
@@ -107,6 +109,16 @@ export function speakSequence(items, gap = 500) {
 // Play the same word `n` times with a pause between each.
 export function speakTimes(text, n = 3, gap = 500) {
   speakSequence(Array(n).fill(text), gap);
+}
+
+// Play an arbitrary clip path (e.g. a letter clip), falling back to speech
+// synthesis of `fallbackText` if it can't load.
+export function playClip(src, fallbackText) {
+  stopAll();
+  const a = new Audio(src);
+  currentAudio = a;
+  a.addEventListener("error", () => synthSpeak(fallbackText || ""), { once: true });
+  a.play().catch(() => synthSpeak(fallbackText || ""));
 }
 
 function synthSpeak(text) {

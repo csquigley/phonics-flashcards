@@ -986,6 +986,9 @@ main {
 /* ================= Bricks Phonics (letters) ================= */
 .bp-letter { font-size: clamp(4rem, 22vw, 9rem); font-weight: bold; color: #d81b60; line-height: 1; }
 .brick-back .bp-letter { color: #1565c0; }
+.bp-keyword { font-size: clamp(1.1rem, 4.5vw, 1.6rem); font-weight: bold; color: #5b3fa0; }
+.brick-front { padding: 0.6rem; }
+.brick-front .brick-pic { width: 100%; height: 100%; }
 
 .bp-letter-options { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7rem; width: 100%; }
 .bp-letter-opt {

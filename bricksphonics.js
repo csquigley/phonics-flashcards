@@ -45,17 +45,33 @@ function letterFlash() {
   let i = 0;
   stage.innerHTML = `
     <div class="brick-flip-scene"><div class="brick-flip" id="bpFlip" tabindex="0">
-      <div class="brick-face brick-front"><span class="bp-letter" id="bpUpper"></span></div>
-      <div class="brick-face brick-back"><span class="bp-letter" id="bpLower"></span><button class="speak-btn" id="bpSpeak">🔊</button></div>
+      <div class="brick-face brick-front" id="bpFront"></div>
+      <div class="brick-face brick-back">
+        <span class="bp-letter" id="bpLetters"></span>
+        <span class="bp-keyword" id="bpKeyword"></span>
+        <button class="speak-btn" id="bpSpeak">🔊</button>
+      </div>
     </div></div>
     <div class="brick-controls"><button id="bpPrev">◀</button><span class="progress" id="bpProg"></span><button id="bpNext">▶</button><button id="bpShuf">🔀</button></div>
     <p class="keys">tap to flip · 🔊 hear the letter</p>`;
   const flip = stage.querySelector("#bpFlip");
+  const front = stage.querySelector("#bpFront");
   const show = () => {
     const l = letters[i];
     flip.classList.remove("flipped");
-    stage.querySelector("#bpUpper").textContent = l.upper;
-    stage.querySelector("#bpLower").textContent = l.lower;
+    // front: the illustrated letter card (falls back to the letters as text)
+    front.innerHTML = "";
+    const pic = document.createElement("div");
+    pic.className = "brick-pic";
+    pic.dataset.word = `${l.upper}${l.lower}`;
+    const img = document.createElement("img");
+    img.src = `images/letters/${l.key}.png`;
+    img.alt = `${l.upper} ${l.lower}`;
+    img.addEventListener("error", () => pic.classList.add("noimg"));
+    pic.appendChild(img);
+    front.appendChild(pic);
+    stage.querySelector("#bpLetters").textContent = `${l.upper} ${l.lower}`;
+    stage.querySelector("#bpKeyword").textContent = `${l.upper} is for ${l.keyword}`;
     stage.querySelector("#bpProg").textContent = `${i + 1} / ${letters.length}`;
   };
   const move = d => { i = (i + d + letters.length) % letters.length; show(); };

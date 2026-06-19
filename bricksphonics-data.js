@@ -1,6 +1,14 @@
 // Bricks Phonics — the alphabet split into three parts plus a set of CVC words.
+// Each letter has a keyword animal/object (used for its illustrated card).
+const KEYWORDS = {
+  a: "apple", b: "bear", c: "cat", d: "dog", e: "elephant", f: "fish",
+  g: "goat", h: "horse", i: "igloo", j: "jellyfish", k: "kite", l: "lion",
+  m: "monkey", n: "nest", o: "octopus", p: "pig", q: "queen", r: "rabbit",
+  s: "sun", t: "tiger", u: "umbrella", v: "violin", w: "whale",
+  x: "xylophone", y: "yo-yo", z: "zebra",
+};
 export const ALPHABET = "abcdefghijklmnopqrstuvwxyz".split("").map(ch => ({
-  lower: ch, upper: ch.toUpperCase(), key: ch,
+  lower: ch, upper: ch.toUpperCase(), key: ch, keyword: KEYWORDS[ch],
 }));
 
 export const ALPHABET_PARTS = [

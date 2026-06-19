@@ -16,11 +16,11 @@ const GAMES = [
 ];
 const ALPHA = "abcdefghijklmnopqrstuvwxyz".split("");
 
-let unit = 0;       // 0 = all units, else 1..4
+let group = 0;      // 0 = all words, else index+1 into BRICKS_UNITS
 let game = "flash";
 
 function currentWords() {
-  return unit === 0 ? BRICKS_WORDS : BRICKS_UNITS[unit - 1].words;
+  return group === 0 ? BRICKS_WORDS : BRICKS_UNITS[group - 1].words;
 }
 
 // A picture node that falls back to the word text if the image is missing.
@@ -336,7 +336,7 @@ function renderSpell() {
 const RENDERERS = { flash: renderFlash, match: renderMatch, memory: renderMemory, spell: renderSpell };
 
 function render() {
-  [...unitsEl.children].forEach(b => b.classList.toggle("active", +b.dataset.unit === unit));
+  [...unitsEl.children].forEach(b => b.classList.toggle("active", +b.dataset.group === group));
   [...gamesEl.children].forEach(b => b.classList.toggle("active", b.dataset.game === game));
   RENDERERS[game]();
 }
@@ -346,11 +346,11 @@ export function refreshBricks() { render(); }
 export function initBricks() {
   const mkBtn = (label, on) => { const b = document.createElement("button"); b.textContent = label; b.addEventListener("click", on); return b; };
 
-  const allBtn = mkBtn("All", () => { unit = 0; render(); }); allBtn.dataset.unit = 0;
+  const allBtn = mkBtn("All", () => { group = 0; render(); }); allBtn.dataset.group = 0;
   unitsEl.appendChild(allBtn);
-  BRICKS_UNITS.forEach(u => {
-    const b = mkBtn(`${u.emoji} Unit ${u.unit}`, () => { unit = u.unit; render(); });
-    b.dataset.unit = u.unit;
+  BRICKS_UNITS.forEach((u, i) => {
+    const b = mkBtn(`${u.emoji} ${u.unit}${u.part}`, () => { group = i + 1; render(); });
+    b.dataset.group = i + 1;
     unitsEl.appendChild(b);
   });
 
@@ -360,6 +360,6 @@ export function initBricks() {
     gamesEl.appendChild(b);
   });
 
-  unit = 1; game = "flash";
+  group = 1; game = "flash";
   render();
 }

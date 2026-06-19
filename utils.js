@@ -1,11 +1,19 @@
 // Shared helpers for the flashcards and games.
 import { CARDS } from "./cards.js";
 import { SCENE_WORDS } from "./scenes-data.js";
+import { BRICKS_WORDS } from "./bricks-data.js";
 
-// Words we have a pre-recorded ElevenLabs clip for (audio/<word>.mp3).
+// Normalise a word/phrase to its audio-file key: lowercase, drop dots, spaces
+// to underscores ("P.E." -> "pe", "social studies" -> "social_studies").
+export function audioKey(s) {
+  return String(s).toLowerCase().trim().replace(/\./g, "").replace(/\s+/g, "_");
+}
+
+// Keys we have a pre-recorded ElevenLabs clip for (audio/<key>.mp3).
 const AUDIO_WORDS = new Set([
-  ...CARDS.flatMap(c => c.words.map(w => w.word)),
-  ...SCENE_WORDS,
+  ...CARDS.flatMap(c => c.words.map(w => audioKey(w.word))),
+  ...SCENE_WORDS.map(audioKey),
+  ...BRICKS_WORDS.map(w => w.key),
 ]);
 
 // Pre-recorded clips for whole phrases (keyed by lowercased text).
@@ -41,9 +49,11 @@ export function highlight(word, grapheme) {
 let currentAudio = null;
 let seqToken = 0; // bumped to cancel any in-flight sequence
 
-function srcForKey(key) {
-  if (AUDIO_WORDS.has(key)) return `audio/${key}.mp3`;
-  return PHRASES[key] || null;
+function srcForKey(text) {
+  const low = String(text).toLowerCase().trim();
+  if (PHRASES[low]) return PHRASES[low];
+  const k = audioKey(text);
+  return AUDIO_WORDS.has(k) ? `audio/${k}.mp3` : null;
 }
 
 function stopAll() {
@@ -56,7 +66,7 @@ function stopAll() {
 // fall back to the browser's speech synth (used for phrases like "You escaped!").
 export function speak(text) {
   stopAll();
-  const src = srcForKey(String(text).toLowerCase().trim());
+  const src = srcForKey(text);
   if (src) {
     currentAudio = new Audio(src);
     currentAudio.play().catch(() => synthSpeak(text)); // fall back if blocked
@@ -75,7 +85,7 @@ export function speakSequence(items, gap = 500) {
   const next = () => {
     if (token !== seqToken || i >= items.length) return;
     const text = items[i++];
-    const src = srcForKey(String(text).toLowerCase().trim());
+    const src = srcForKey(text);
     const after = () => { if (token === seqToken) setTimeout(next, gap); };
     if (src) {
       currentAudio = new Audio(src);
